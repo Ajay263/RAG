@@ -9,7 +9,7 @@
 
 3. ### access the MongoDB shel
 
-`docker exec -it <container_id> mongo -u root -p root`
+`docker exec -it 1ec6f2de4694 mongosh -u root -p root`
 
 
 4. ### Once inside the MongoDB shell,  verify the data 
