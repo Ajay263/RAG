@@ -1,0 +1,14 @@
+{
+    "name": "mongodb-connector",
+    "config": {
+      "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+      "mongodb.hosts": "localhost:27017",
+      "mongodb.name": "dbserver1",
+      "mongodb.user": "root",
+      "mongodb.password": "root",
+      "database.include.list": "web_scraper_db",
+      "collection.include.list": "web_scraper_db.blog_posts",
+      "database.history.kafka.bootstrap.servers": "localhost:9092",
+      "database.history.kafka.topic": "schema-changes.web_scraper_db"
+    }
+  }
