@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, PyMongoError
-from typing import Dict, Any
+from typing import Any, Dict, Optional, List
 import logging
 from config import MONGO_URI, MONGO_DB_NAME, MONGO_COLLECTION_NAME
 

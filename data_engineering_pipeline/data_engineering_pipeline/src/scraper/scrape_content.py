@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from typing import Dict, List
+from typing import Any, Dict, Optional, List
 import logging
 from src.utils.helpers import replace_strange_chars, filter_paragraphs, extract_category_and_tags
 from src.scraper.extract_urls import get_webpage_content

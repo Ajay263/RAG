@@ -1,10 +1,9 @@
 import logging
-from typing import List, Dict, Any
+from typing import Any
 from tqdm import tqdm
 from src.scraper.extract_urls import extract_all_urls, clean_urls
 from src.scraper.scrape_content import scrape_blog_post
 from src.db.mongo_handler import MongoHandler
-from typing import Any, Dict
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
