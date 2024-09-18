@@ -1,0 +1,15 @@
+{
+  "name": "inventory-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongodb:27017/?replicaSet=rs0",
+    "mongodb.name": "fullfillment",
+    "topic.prefix": "fullfillment",
+    "database.include.list": "inventory",
+    "collection.include.list": "inventory.*",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": true,
+    "value.converter.schemas.enable": true
+  }
+}

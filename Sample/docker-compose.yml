@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:2.7
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+  kafka:
+    image: quay.io/debezium/kafka:2.7
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - "27017:27017"
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongodb_data:/data/db
+  mongo-init:
+    image: mongo:5.0
+    depends_on:
+      - mongodb
+    command: >
+      bash -c "
+      sleep 10 &&
+      mongo mongodb://mongodb:27017 --eval '
+      rs.initiate({
+        _id: \"rs0\",
+        members: [{ _id: 0, host: \"mongodb:27017\" }]
+      })'
+      "
+  connect:
+    image: debezium/connect:2.7
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_PLUGIN_PATH=/kafka/connect
+    volumes:
+      - ./debezium-connector-mongodb:/kafka/connect/debezium-connector-mongodb
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.0
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+      - kafka
+    environment:
+      - LS_JAVA_OPTS=-Xmx1g -Xms1g
+
+volumes:
+  mongodb_data:
+  elasticsearch_data:
